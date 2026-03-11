@@ -504,7 +504,6 @@ const MENU_SECTIONS = [
     title:"Discover",
     items:[
       { icon:"🆘", label:"National Hotlines",     desc:"Crisis & emergency lines" },
-      { icon:"🗺",  label:"Map View",              desc:"See services on a map", badge:"Coming Soon" },
       { icon:"📋", label:"All Categories",         desc:"Browse every service type" },
     ],
   },
@@ -674,6 +673,144 @@ function HamburgerMenu({ onClose, onOpenNotif, onChangeLocation }) {
           </div>
         )}
 
+        {/* Sub-screen: Map View */}
+        {activeScreen === "map" && (
+          <div style={{ flex:1, display:"flex", flexDirection:"column" }}>
+            <button onClick={() => setActiveScreen(null)} style={{ display:"flex", alignItems:"center", gap:8, padding:"12px 16px", background:"none", border:"none", borderBottom:`1px solid ${C.slate100}`, cursor:"pointer", width:"100%", textAlign:"left", flexShrink:0 }}>
+              <span style={{ fontSize:16 }}>←</span>
+              <span style={{ fontSize:13, fontWeight:700, color:C.slate700 }}>Map View</span>
+            </button>
+
+            {/* Mock map area */}
+            <div style={{ position:"relative", flex:1, background:"#e8f0e8", overflow:"hidden", minHeight:320 }}>
+
+              {/* Grid lines to simulate map */}
+              {[...Array(8)].map((_,i) => (
+                <div key={`h${i}`} style={{ position:"absolute", left:0, right:0, top:`${i*14}%`, height:1, background:"rgba(255,255,255,0.5)" }} />
+              ))}
+              {[...Array(8)].map((_,i) => (
+                <div key={`v${i}`} style={{ position:"absolute", top:0, bottom:0, left:`${i*14}%`, width:1, background:"rgba(255,255,255,0.5)" }} />
+              ))}
+
+              {/* Roads */}
+              <div style={{ position:"absolute", left:"30%", right:0, top:"45%", height:6, background:"rgba(255,255,255,0.8)", borderRadius:3 }} />
+              <div style={{ position:"absolute", left:0, right:"40%", top:"70%", height:6, background:"rgba(255,255,255,0.8)", borderRadius:3 }} />
+              <div style={{ position:"absolute", left:"55%", top:0, bottom:0, width:6, background:"rgba(255,255,255,0.8)", borderRadius:3 }} />
+              <div style={{ position:"absolute", left:"20%", top:0, bottom:"35%", width:4, background:"rgba(255,255,255,0.6)", borderRadius:3 }} />
+
+              {/* Mock pins */}
+              {[
+                { top:"22%", left:"28%", color:"#059669", label:"St. Matthew's House",     cat:"Housing",   open:true  },
+                { top:"38%", left:"55%", color:"#059669", label:"Women's Transitional",    cat:"Housing",   open:false },
+                { top:"58%", left:"20%", color:"#F59E0B", label:"Naples Food Pantry",      cat:"Food",      open:true  },
+                { top:"30%", left:"72%", color:"#F59E0B", label:"Catholic Charities",      cat:"Food",      open:true  },
+                { top:"68%", left:"62%", color:"#6366F1", label:"Youth Haven",             cat:"Education", open:true  },
+                { top:"15%", left:"48%", color:"#059669", label:"Providence House",        cat:"Housing",   open:true  },
+                { top:"75%", left:"38%", color:"#F59E0B", label:"Harry Chapin Food Bank",  cat:"Food",      open:false },
+                { top:"50%", left:"80%", color:"#6366F1", label:"Goodwill Job Training",   cat:"Education", open:true  },
+              ].map((pin, i) => (
+                <div key={i} style={{ position:"absolute", top:pin.top, left:pin.left, transform:"translate(-50%,-100%)", zIndex:2, cursor:"pointer" }}
+                  title={pin.label}>
+                  {/* Pin shape */}
+                  <div style={{ display:"flex", flexDirection:"column", alignItems:"center" }}>
+                    <div style={{
+                      width:30, height:30, borderRadius:"50% 50% 50% 0",
+                      transform:"rotate(-45deg)",
+                      background: pin.open ? pin.color : "#94A3B8",
+                      border:"2.5px solid white",
+                      boxShadow:"0 2px 8px rgba(0,0,0,0.25)",
+                      display:"flex", alignItems:"center", justifyContent:"center",
+                    }}>
+                      <span style={{ transform:"rotate(45deg)", fontSize:12 }}>
+                        {pin.cat === "Housing" ? "🏠" : pin.cat === "Food" ? "🍽" : "📚"}
+                      </span>
+                    </div>
+                    <div style={{ width:2, height:6, background: pin.open ? pin.color : "#94A3B8" }} />
+                  </div>
+                </div>
+              ))}
+
+              {/* My location dot */}
+              <div style={{ position:"absolute", top:"48%", left:"50%", transform:"translate(-50%,-50%)", zIndex:3 }}>
+                <div style={{ width:16, height:16, borderRadius:"50%", background:"#3B82F6", border:"3px solid white", boxShadow:"0 0 0 4px rgba(59,130,246,0.25)" }} />
+              </div>
+
+              {/* Legend */}
+              <div style={{
+                position:"absolute", bottom:10, left:10, right:10,
+                background:"rgba(255,255,255,0.95)", borderRadius:10,
+                padding:"8px 12px",
+                display:"flex", gap:12, alignItems:"center",
+                boxShadow:"0 2px 8px rgba(0,0,0,0.12)",
+              }}>
+                {[
+                  { color:"#059669", label:"Housing" },
+                  { color:"#F59E0B", label:"Food" },
+                  { color:"#6366F1", label:"Education" },
+                  { color:"#94A3B8", label:"Closed" },
+                ].map((l,i) => (
+                  <div key={i} style={{ display:"flex", alignItems:"center", gap:4 }}>
+                    <div style={{ width:10, height:10, borderRadius:"50%", background:l.color }} />
+                    <span style={{ fontSize:10, color:"#475569", fontWeight:600 }}>{l.label}</span>
+                  </div>
+                ))}
+                <div style={{ display:"flex", alignItems:"center", gap:4, marginLeft:"auto" }}>
+                  <div style={{ width:10, height:10, borderRadius:"50%", background:"#3B82F6", border:"2px solid white", boxShadow:"0 0 0 2px rgba(59,130,246,0.3)" }} />
+                  <span style={{ fontSize:10, color:"#475569", fontWeight:600 }}>You</span>
+                </div>
+              </div>
+
+              {/* Coming soon overlay badge */}
+              <div style={{
+                position:"absolute", top:10, right:10,
+                background:"rgba(5,150,105,0.9)", color:"white",
+                fontSize:10, fontWeight:700, padding:"4px 10px",
+                borderRadius:20, letterSpacing:"0.5px",
+              }}>PREVIEW</div>
+            </div>
+
+            {/* Service list below map */}
+            <div style={{ padding:"10px 12px 6px", borderBottom:`1px solid ${C.slate100}` }}>
+              <div style={{ fontSize:11, fontWeight:700, color:C.slate500, textTransform:"uppercase", letterSpacing:"0.8px" }}>8 services nearby</div>
+            </div>
+            <div style={{ overflowY:"auto", flex:1 }}>
+              {[
+                { color:"#059669", name:"St. Matthew's House",    dist:"0.3mi", open:true,  cat:"Housing"   },
+                { color:"#F59E0B", name:"Naples Food Pantry",     dist:"0.5mi", open:true,  cat:"Food"      },
+                { color:"#059669", name:"Providence House",       dist:"0.7mi", open:true,  cat:"Housing"   },
+                { color:"#6366F1", name:"Youth Haven",            dist:"1.1mi", open:true,  cat:"Education" },
+                { color:"#F59E0B", name:"Catholic Charities",     dist:"1.4mi", open:true,  cat:"Food"      },
+                { color:"#6366F1", name:"Goodwill Job Training",  dist:"1.8mi", open:true,  cat:"Education" },
+                { color:"#059669", name:"Women's Transitional",   dist:"2.1mi", open:false, cat:"Housing"   },
+                { color:"#F59E0B", name:"Harry Chapin Food Bank", dist:"2.4mi", open:false, cat:"Food"      },
+              ].map((s, i) => (
+                <div key={i} style={{
+                  display:"flex", alignItems:"center", gap:10,
+                  padding:"10px 14px", borderBottom:`1px solid ${C.slate100}`,
+                  cursor:"pointer",
+                }}>
+                  <div style={{ width:10, height:10, borderRadius:"50%", background: s.open ? s.color : "#94A3B8", flexShrink:0 }} />
+                  <div style={{ flex:1 }}>
+                    <div style={{ fontSize:13, fontWeight:700, color:C.slate800 }}>{s.name}</div>
+                    <div style={{ fontSize:11, color:C.slate400 }}>{s.cat}</div>
+                  </div>
+                  <div style={{ display:"flex", flexDirection:"column", alignItems:"flex-end", gap:2 }}>
+                    <span style={{ fontSize:11, fontWeight:700, color:C.slate500 }}>{s.dist}</span>
+                    <span style={{ fontSize:10, fontWeight:700, color: s.open ? "#059669" : "#94A3B8" }}>{s.open ? "Open" : "Closed"}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Note */}
+            <div style={{ padding:"10px 14px", background:C.slate100, flexShrink:0 }}>
+              <div style={{ fontSize:11, color:C.slate500, textAlign:"center", lineHeight:1.5 }}>
+                🗺 Live map with real locations coming in Phase 3 with Google Maps integration
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Main menu items */}
         {!activeScreen && (
           <div style={{ flex:1 }}>
@@ -733,6 +870,7 @@ export default function HavenApp() {
   const [searchQuery] = useState("");
   const [showNotif, setShowNotif]           = useState(false);
   const [showMenu, setShowMenu]             = useState(false);
+  const [viewMode, setViewMode]             = useState("list"); // "list" | "map"
 
   const handleSelectLocation = (label) => { setLocationLabel(label); setShowModal(false); };
   const handleCategoryChange = (cat)   => { setActiveCategory(cat); setActiveSubtype("All"); };
@@ -849,14 +987,33 @@ export default function HavenApp() {
         </div>
       )}
 
-      {/* ── RESULTS COUNT ── */}
-      <div style={{ padding:"10px 14px 4px" }}>
+      {/* ── RESULTS COUNT + VIEW TOGGLE ── */}
+      <div style={{ padding:"8px 14px", display:"flex", alignItems:"center", justifyContent:"space-between" }}>
         <span style={{ fontSize:12, color:colors.slate400, fontWeight:500 }}>
           {locationLabel ? `${filtered.length} services found · nearest first` : "👆 Set your location to find nearby help"}
         </span>
+        {locationLabel && (
+          <div style={{ display:"flex", background:colors.slate100, borderRadius:8, padding:3, gap:2 }}>
+            {[
+              { mode:"list", icon:"≡", label:"List" },
+              { mode:"map",  icon:"🗺", label:"Map"  },
+            ].map(v => (
+              <button key={v.mode} onClick={() => setViewMode(v.mode)} style={{
+                padding:"4px 12px", borderRadius:6, border:"none", cursor:"pointer",
+                background: viewMode === v.mode ? colors.white : "transparent",
+                color: viewMode === v.mode ? colors.emeraldDark : colors.slate400,
+                fontWeight: viewMode === v.mode ? 800 : 600,
+                fontSize:12,
+                boxShadow: viewMode === v.mode ? "0 1px 4px rgba(0,0,0,0.12)" : "none",
+                transition:"all 0.15s",
+              }}>{v.icon} {v.label}</button>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* ── SERVICE LIST ── */}
+      {viewMode === "list" && (
       <div style={{ flex:1, paddingTop:6, paddingBottom:24 }}>
         {!locationLabel ? (
           <div style={{ display:"flex", flexDirection:"column", alignItems:"center", padding:"50px 32px", textAlign:"center", gap:16 }}>
@@ -881,6 +1038,133 @@ export default function HavenApp() {
           filtered.map(s => <ServiceCard key={s.id} service={s} />)
         )}
       </div>
+      )}
+
+      {/* ── MAP VIEW ── */}
+      {viewMode === "map" && locationLabel && (
+      <div style={{ flex:1, display:"flex", flexDirection:"column" }}>
+
+        {/* Mock map area */}
+        <div style={{ position:"relative", height:340, background:"#e8f0e8", overflow:"hidden", flexShrink:0 }}>
+          {/* Grid lines */}
+          {[...Array(8)].map((_,i) => (
+            <div key={`h${i}`} style={{ position:"absolute", left:0, right:0, top:`${i*14}%`, height:1, background:"rgba(255,255,255,0.5)" }} />
+          ))}
+          {[...Array(8)].map((_,i) => (
+            <div key={`v${i}`} style={{ position:"absolute", top:0, bottom:0, left:`${i*14}%`, width:1, background:"rgba(255,255,255,0.5)" }} />
+          ))}
+          {/* Roads */}
+          <div style={{ position:"absolute", left:"30%", right:0, top:"45%", height:6, background:"rgba(255,255,255,0.8)", borderRadius:3 }} />
+          <div style={{ position:"absolute", left:0, right:"40%", top:"70%", height:6, background:"rgba(255,255,255,0.8)", borderRadius:3 }} />
+          <div style={{ position:"absolute", left:"55%", top:0, bottom:0, width:6, background:"rgba(255,255,255,0.8)", borderRadius:3 }} />
+          <div style={{ position:"absolute", left:"20%", top:0, bottom:"35%", width:4, background:"rgba(255,255,255,0.6)", borderRadius:3 }} />
+
+          {/* Pins */}
+          {[
+            { top:"22%", left:"28%", color:"#059669", label:"St. Matthew's House",    cat:"Housing",   open:true  },
+            { top:"38%", left:"55%", color:"#059669", label:"Women's Transitional",   cat:"Housing",   open:false },
+            { top:"58%", left:"20%", color:"#F59E0B", label:"Naples Food Pantry",     cat:"Food",      open:true  },
+            { top:"30%", left:"72%", color:"#F59E0B", label:"Catholic Charities",     cat:"Food",      open:true  },
+            { top:"68%", left:"62%", color:"#6366F1", label:"Youth Haven",            cat:"Education", open:true  },
+            { top:"15%", left:"48%", color:"#059669", label:"Providence House",       cat:"Housing",   open:true  },
+            { top:"75%", left:"38%", color:"#F59E0B", label:"Harry Chapin Food Bank", cat:"Food",      open:false },
+            { top:"50%", left:"80%", color:"#6366F1", label:"Goodwill Job Training",  cat:"Education", open:true  },
+          ].map((pin, i) => (
+            <div key={i} style={{ position:"absolute", top:pin.top, left:pin.left, transform:"translate(-50%,-100%)", zIndex:2, cursor:"pointer" }} title={pin.label}>
+              <div style={{ display:"flex", flexDirection:"column", alignItems:"center" }}>
+                <div style={{
+                  width:30, height:30, borderRadius:"50% 50% 50% 0", transform:"rotate(-45deg)",
+                  background: pin.open ? pin.color : "#94A3B8",
+                  border:"2.5px solid white", boxShadow:"0 2px 8px rgba(0,0,0,0.25)",
+                  display:"flex", alignItems:"center", justifyContent:"center",
+                }}>
+                  <span style={{ transform:"rotate(45deg)", fontSize:12 }}>
+                    {pin.cat === "Housing" ? "🏠" : pin.cat === "Food" ? "🍽" : "📚"}
+                  </span>
+                </div>
+                <div style={{ width:2, height:6, background: pin.open ? pin.color : "#94A3B8" }} />
+              </div>
+            </div>
+          ))}
+
+          {/* My location dot */}
+          <div style={{ position:"absolute", top:"48%", left:"50%", transform:"translate(-50%,-50%)", zIndex:3 }}>
+            <div style={{ width:16, height:16, borderRadius:"50%", background:"#3B82F6", border:"3px solid white", boxShadow:"0 0 0 4px rgba(59,130,246,0.25)" }} />
+          </div>
+
+          {/* Legend */}
+          <div style={{
+            position:"absolute", bottom:10, left:10, right:10,
+            background:"rgba(255,255,255,0.95)", borderRadius:10, padding:"8px 12px",
+            display:"flex", gap:12, alignItems:"center", flexWrap:"wrap",
+            boxShadow:"0 2px 8px rgba(0,0,0,0.12)",
+          }}>
+            {[
+              { color:"#059669", label:"Housing" },
+              { color:"#F59E0B", label:"Food" },
+              { color:"#6366F1", label:"Education" },
+              { color:"#94A3B8", label:"Closed" },
+            ].map((l,i) => (
+              <div key={i} style={{ display:"flex", alignItems:"center", gap:4 }}>
+                <div style={{ width:10, height:10, borderRadius:"50%", background:l.color }} />
+                <span style={{ fontSize:10, color:"#475569", fontWeight:600 }}>{l.label}</span>
+              </div>
+            ))}
+            <div style={{ display:"flex", alignItems:"center", gap:4, marginLeft:"auto" }}>
+              <div style={{ width:10, height:10, borderRadius:"50%", background:"#3B82F6", border:"2px solid white", boxShadow:"0 0 0 2px rgba(59,130,246,0.3)" }} />
+              <span style={{ fontSize:10, color:"#475569", fontWeight:600 }}>You</span>
+            </div>
+          </div>
+
+          {/* Preview badge */}
+          <div style={{
+            position:"absolute", top:10, right:10,
+            background:"rgba(5,150,105,0.9)", color:"white",
+            fontSize:10, fontWeight:700, padding:"4px 10px", borderRadius:20, letterSpacing:"0.5px",
+          }}>PREVIEW</div>
+        </div>
+
+        {/* Service list below map */}
+        <div style={{ padding:"10px 14px 6px", borderBottom:`1px solid ${colors.slate100}` }}>
+          <div style={{ fontSize:11, fontWeight:700, color:colors.slate500, textTransform:"uppercase", letterSpacing:"0.8px" }}>{filtered.length} services nearby</div>
+        </div>
+        <div style={{ overflowY:"auto", flex:1, paddingBottom:24 }}>
+          {[
+            { color:"#059669", name:"St. Matthew's House",    dist:"0.3mi", open:true,  cat:"Housing"   },
+            { color:"#F59E0B", name:"Naples Food Pantry",     dist:"0.5mi", open:true,  cat:"Food"      },
+            { color:"#059669", name:"Providence House",       dist:"0.7mi", open:true,  cat:"Housing"   },
+            { color:"#6366F1", name:"Youth Haven",            dist:"1.1mi", open:true,  cat:"Education" },
+            { color:"#F59E0B", name:"Catholic Charities",     dist:"1.4mi", open:true,  cat:"Food"      },
+            { color:"#6366F1", name:"Goodwill Job Training",  dist:"1.8mi", open:true,  cat:"Education" },
+            { color:"#059669", name:"Women's Transitional",   dist:"2.1mi", open:false, cat:"Housing"   },
+            { color:"#F59E0B", name:"Harry Chapin Food Bank", dist:"2.4mi", open:false, cat:"Food"      },
+          ].map((s, i) => (
+            <div key={i} style={{
+              display:"flex", alignItems:"center", gap:10,
+              padding:"12px 14px", borderBottom:`1px solid ${colors.slate100}`,
+              cursor:"pointer", background:colors.white,
+            }}>
+              <div style={{ width:10, height:10, borderRadius:"50%", background: s.open ? s.color : "#94A3B8", flexShrink:0 }} />
+              <div style={{ flex:1 }}>
+                <div style={{ fontSize:13, fontWeight:700, color:colors.slate800 }}>{s.name}</div>
+                <div style={{ fontSize:11, color:colors.slate400 }}>{s.cat}</div>
+              </div>
+              <div style={{ display:"flex", flexDirection:"column", alignItems:"flex-end", gap:2 }}>
+                <span style={{ fontSize:11, fontWeight:700, color:colors.slate500 }}>{s.dist}</span>
+                <span style={{ fontSize:10, fontWeight:700, color: s.open ? "#059669" : "#94A3B8" }}>{s.open ? "Open" : "Closed"}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Note */}
+        <div style={{ padding:"10px 14px", background:colors.slate100, flexShrink:0 }}>
+          <div style={{ fontSize:11, color:colors.slate500, textAlign:"center", lineHeight:1.5 }}>
+            🗺 Live Google Maps integration coming in Phase 3
+          </div>
+        </div>
+      </div>
+      )}
 
       {/* ── LOCATION MODAL ── */}
       {showModal && <LocationModal onSelect={handleSelectLocation} onClose={() => setShowModal(false)} />}
